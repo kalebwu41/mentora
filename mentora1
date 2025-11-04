@@ -1,1 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentora | Career Roadmaps & Simulations</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg-gradient: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        --surface: #ffffff;
+        --surface-strong: #f1f5f9;
+        --primary: #2b6cb0;
+        --primary-soft: #63b3ed;
+        --text-main: #1f2937;
+        --text-soft: #475569;
+        --border: #cbd5f5;
+        --success: #22c55e;
+        --shadow-soft: 0 18px 40px -24px rgba(43, 108, 176, 0.65);
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg-gradient);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        padding: 3.5rem 1.5rem 2rem;
+        text-align: center;
+      }
+
+      header h1 {
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        margin: 0 0 1rem;
+        color: var(--primary);
+        letter-spacing: -0.02em;
+      }
+
+      header p {
+        max-width: 740px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+        color: var(--text-soft);
+        line-height: 1.6;
+      }
+
+      main {
+        width: min(1200px, 92vw);
+        margin: 0 auto 4rem;
+        display: grid;
+        gap: 2.5rem;
+      }
+
+      .selection-panel {
+        background: var(--surface);
+        border-radius: 22px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+      }
+
+      .selection-panel h2 {
+        margin: 0;
+        font-size: 1.75rem;
+        color: var(--primary);
+      }
+
+      .selection-panel p {
+        margin: 0;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+
+      .career-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .career-card {
+        background: var(--surface-strong);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .career-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px -32px rgba(43, 108, 176, 0.75);
+        border-color: rgba(99, 179, 237, 0.6);
+      }
+
+      .career-card.active {
+        border-color: var(--primary);
+        background: #e0f2fe;
+        box-shadow: 0 20px 50px -32px rgba(43, 108, 176, 0.9);
+      }
+
+      .career-card h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+
+      .career-card p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+
+      .details-panel {
+        background: var(--surface);
+        border-radius: 22px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-soft);
+        display: grid;
+        gap: 2.5rem;
+      }
+
+      .placeholder {
+        text-align: center;
+        color: var(--text-soft);
+        font-size: 1.1rem;
+        line-height: 1.7;
+      }
+
+      .placeholder span {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.65rem 1.5rem;
+        border-radius: 999px;
+        background: rgba(99, 179, 237, 0.15);
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .section-title {
+        font-size: 1.65rem;
+        color: var(--primary);
+        margin: 0 0 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .section-title::before {
+        content: "";
+        width: 42px;
+        height: 4px;
+        border-radius: 999px;
+        background: var(--primary);
+        opacity: 0.35;
+      }
+
+      .roadmap-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .roadmap-card {
+        background: var(--surface-strong);
+        border-radius: 18px;
+        padding: 1.5rem;
+        border: 1px solid rgba(43, 108, 176, 0.12);
+        display: grid;
+        gap: 1rem;
+      }
+
+      .roadmap-card h4 {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--primary);
+      }
+
+      .roadmap-card ul {
+        margin: 0;
+        padding-left: 1.1rem;
+        color: var(--text-soft);
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+
+      .roadmap-card ul li + li {
+        margin-top: 0.5rem;
+      }
+
+      .simulation-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .simulation-card {
+        background: var(--surface-strong);
+        border-radius: 18px;
+        padding: 1.75rem;
+        border: 1px solid rgba(43, 108, 176, 0.12);
+        display: grid;
+        gap: 0.85rem;
+      }
+
+      .badge-day {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--primary);
+        background: rgba(99, 179, 237, 0.2);
+        border-radius: 999px;
+        padding: 0.35rem 0.9rem;
+        font-size: 0.85rem;
+      }
+
+      .simulation-card h4 {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--text-main);
+      }
+
+      .simulation-card p {
+        margin: 0;
+        color: var(--text-soft);
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+
+      footer {
+        margin-top: auto;
+        padding: 2.5rem 1.5rem 3rem;
+        text-align: center;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 880px) {
+        header {
+          padding: 2.5rem 1.5rem 1.5rem;
+        }
+
+        .selection-panel,
+        .details-panel {
+          padding: 2rem;
+        }
+
+        .section-title {
+          font-size: 1.45rem;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .career-grid {
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        }
+
+        .roadmap-card,
+        .simulation-card {
+          padding: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Mentora Career Explorer</h1>
+      <p>
+        Choose a career field to see a supportive, step-by-step roadmap and walk
+        through a realistic seven-day internship simulation. Everything is kept
+        friendly, practical, and ready for beginners who want a confident start.
+      </p>
+    </header>
+
+    <main>
+      <section class="selection-panel" aria-labelledby="career-picker">
+        <div>
+          <h2 id="career-picker">Start by selecting a career path</h2>
+          <p>
+            Tap on a career card to unlock tailored guidance covering education,
+            skill-building, credentials, and practical milestones—plus a
+            mentor-style internship preview.
+          </p>
+        </div>
+        <div class="career-grid" id="careerGrid" role="list"></div>
+      </section>
+
+      <section class="details-panel" aria-live="polite" id="detailsPanel">
+        <div class="placeholder" id="placeholder">
+          Select a career to reveal your guided roadmap and immersive internship
+          experience.
+          <span>Mentora is ready when you are.</span>
+        </div>
+      </section>
+    </main>
+
+    <footer>Mentora · Encouraging career clarity, one choice at a time.</footer>
+
+    <script>
+      const careerData = {
+        "software-developer": {
+          name: "Software Developer",
+          summary:
+            "Designs and builds digital products for the web, mobile, and beyond.",
+          roadmap: {
+            education: [
+              "Finish high school and explore introductory coding courses online or through community programs.",
+              "Pursue a computer science degree, software engineering diploma, or an intensive coding bootcamp.",
+              "Take electives in algorithms, databases, and user experience to deepen core knowledge.",
+              "Complete internships or part-time roles to apply classroom learning in real projects."
+            ],
+            skills: [
+              "Practice problem-solving with pseudocode before writing any full program.",
+              "Learn HTML, CSS, and JavaScript, then add a back-end language such as Python, Java, or C#.",
+              "Understand relational databases and how to write clean SQL queries.",
+              "Use Git and GitHub for version control and collaborate through pull requests.",
+              "Build personal projects that solve everyday problems and publish them in a portfolio."
+            ],
+            certifications: [
+              "Google IT Automation with Python or Meta Front-End Developer once fundamentals feel comfortable.",
+              "Complete vendor-specific cloud badges (AWS, Azure, or Google Cloud) to show deployment awareness."
+            ],
+            milestones: [
+              "Publish at least three polished portfolio projects with clear readme files.",
+              "Contribute to one open-source repository to experience code reviews.",
+              "Secure a freelance gig, part-time job, or internship building real features.",
+              "Attend local meetups or hackathons and grow relationships with other developers."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Onboarding & Setup",
+              tasks: "Intro call with the team, review the product brief, and set up your development environment.",
+              challenge: "Understand the existing codebase quickly without getting overwhelmed.",
+              feedback:
+                "Great initiative reading the documentation first—keep noting unanswered questions for tomorrow."
+            },
+            {
+              day: "Day 2",
+              focus: "Bug Fixing Basics",
+              tasks: "Fix a small user interface bug and push your code for review.",
+              challenge: "Track down CSS specificity issues to keep styles consistent.",
+              feedback:
+                "Your console logging saved time—add a short comment in the code explaining the change."
+            },
+            {
+              day: "Day 3",
+              focus: "Building an API",
+              tasks: "Design a simple REST API endpoint that returns profile information.",
+              challenge: "Pick naming conventions and status codes that stay consistent with the project.",
+              feedback:
+                "The endpoint matches project style—next time add input validation to protect the service."
+            },
+            {
+              day: "Day 4",
+              focus: "Database Collaboration",
+              tasks: "Pair program with a teammate to optimize a database query.",
+              challenge: "Understand joins and decide which indexes matter most.",
+              feedback:
+                "You asked thoughtful questions—document the key takeaways in the project wiki."
+            },
+            {
+              day: "Day 5",
+              focus: "Quality Assurance",
+              tasks: "Implement unit tests for the new feature and run the test suite.",
+              challenge: "Mock external services so tests stay reliable.",
+              feedback:
+                "Strong coverage—experiment with writing tests before new code to guide your design."
+            },
+            {
+              day: "Day 6",
+              focus: "Demo & Feedback",
+              tasks: "Demo the feature to the product manager and record their suggestions.",
+              challenge: "Explain technical decisions with simple language.",
+              feedback:
+                "You translated the work clearly—you’re ready to present to clients with confidence."
+            },
+            {
+              day: "Day 7",
+              focus: "Reflection & Planning",
+              tasks: "Join the retrospective, summarize your learning, and set next-step goals.",
+              challenge: "Be honest about growth areas in both technical and communication skills.",
+              feedback:
+                "Clear plan—focus on one new language or framework over the next month to keep momentum."
+            }
+          ]
+        },
+        "digital-marketing": {
+          name: "Digital Marketing Specialist",
+          summary: "Plans and runs online campaigns that connect audiences with brands.",
+          roadmap: {
+            education: [
+              "Complete high school and explore basic marketing, communications, or psychology courses.",
+              "Pursue a marketing degree or stack reputable online certificates focused on digital strategy.",
+              "Study consumer behavior, analytics, and creative writing to balance data with storytelling.",
+              "Secure internships or volunteer roles where you can manage real campaigns."
+            ],
+            skills: [
+              "Conduct customer research to understand needs and motivations before recommending tactics.",
+              "Plan social media strategies, email nurtures, and paid ads that align with clear goals.",
+              "Use SEO fundamentals to improve visibility across web content.",
+              "Measure performance with tools such as Google Analytics, Search Console, and social dashboards.",
+              "Develop persuasive copywriting and presentation skills to win stakeholder support."
+            ],
+            certifications: [
+              "Google Analytics Certification to show measurement skills.",
+              "Google Ads Certification to prove paid media knowledge.",
+              "HubSpot Content Marketing credential for inbound strategy fundamentals."
+            ],
+            milestones: [
+              "Run mini campaigns for a local business, student group, or personal brand.",
+              "Build a digital portfolio with campaign summaries, visuals, and results.",
+              "Intern at an agency or in-house team to manage real budgets.",
+              "Develop a cross-channel case study that shows strategy, execution, and learning."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Brand Discovery",
+              tasks: "Meet the marketing team, review brand guidelines, and audit current social media channels.",
+              challenge: "Spot strengths and weaknesses quickly to guide tomorrow’s planning.",
+              feedback:
+                "Great detective work—list your top improvement ideas for our sync tomorrow."
+            },
+            {
+              day: "Day 2",
+              focus: "Customer Personas",
+              tasks: "Draft two customer personas and present them to your mentor for feedback.",
+              challenge: "Balance real data with thoughtful assumptions without stereotyping.",
+              feedback:
+                "Personas feel relatable—add direct quotes or testimonials to humanize them further."
+            },
+            {
+              day: "Day 3",
+              focus: "Content Planning",
+              tasks: "Plan a two-week content calendar that supports campaign goals.",
+              challenge: "Coordinate messaging across platforms without repeating the exact same post.",
+              feedback:
+                "Smart theme sequencing—double-check timing using platform analytics."
+            },
+            {
+              day: "Day 4",
+              focus: "Email Campaign",
+              tasks: "Set up a test email series with welcome, nurture, and promo messages.",
+              challenge: "Write short calls-to-action that feel natural and urgent.",
+              feedback:
+                "Subject line pops—run an A/B test on the preview text to learn even more."
+            },
+            {
+              day: "Day 5",
+              focus: "Analytics Deep Dive",
+              tasks: "Analyze last month’s campaign metrics and build a dashboard for stakeholders.",
+              challenge: "Interpret bounce rates and conversion percentages in context.",
+              feedback:
+                "Your insights are sharp—recommend one action for each metric you highlight."
+            },
+            {
+              day: "Day 6",
+              focus: "Paid Media Pitch",
+              tasks: "Create a mock paid ad with targeting, budget, and expected results.",
+              challenge: "Work within tight budget limits while proving return on investment.",
+              feedback:
+                "Great ROI projection—include a retargeting plan next time to extend reach."
+            },
+            {
+              day: "Day 7",
+              focus: "Strategy Presentation",
+              tasks: "Present the overall strategy and map out the next month’s focus areas.",
+              challenge: "Defend your decisions calmly when leadership asks tough questions.",
+              feedback:
+                "Confident delivery—keep linking each tactic to a business revenue goal."
+            }
+          ]
+        },
+        "ux-ui-designer": {
+          name: "UX/UI Designer",
+          summary:
+            "Blends user research and visual design to create intuitive digital experiences.",
+          roadmap: {
+            education: [
+              "Complete high school and take art, psychology, or technology electives that build empathy and creativity.",
+              "Pursue a design degree, human-computer interaction program, or UX-focused bootcamp.",
+              "Study user research methods, information architecture, interaction design, and accessibility.",
+              "Apply learning through internships, freelance projects, or student-led initiatives."
+            ],
+            skills: [
+              "Plan and conduct user interviews, surveys, and observational research.",
+              "Create journey maps and personas that capture real user needs.",
+              "Wireframe and prototype quickly using tools like Figma, Sketch, or Adobe XD.",
+              "Run usability tests and translate feedback into clear iteration plans.",
+              "Document design systems and collaborate closely with developers during handoff."
+            ],
+            certifications: [
+              "Google UX Design Certificate for a structured introduction.",
+              "Nielsen Norman Group short courses to deepen specific UX specialties."
+            ],
+            milestones: [
+              "Build at least three detailed case studies that showcase process from research to prototype.",
+              "Conduct real user interviews and synthesize insights into actionable recommendations.",
+              "Shadow a developer to understand constraints and improve handoff quality.",
+              "Present designs to stakeholders and collect feedback with confidence."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Discovery",
+              tasks: "Join the kickoff, review the product brief, and map stakeholder needs.",
+              challenge: "Synthesize requirements into a clear design problem statement.",
+              feedback:
+                "Strong summary—highlight unanswered questions to guide user sessions tomorrow."
+            },
+            {
+              day: "Day 2",
+              focus: "Research Planning",
+              tasks: "Prepare a user interview plan and draft a conversation guide.",
+              challenge: "Avoid leading questions while keeping the interview focused.",
+              feedback:
+                "Empathetic tone—swap yes/no prompts for open-ended questions."
+            },
+            {
+              day: "Day 3",
+              focus: "Wireframing",
+              tasks: "Sketch low-fidelity wireframes that solve the primary user flow.",
+              challenge: "Balance simplicity with enough detail for feedback.",
+              feedback:
+                "Layouts flow well—label navigation states clearly so devs stay aligned."
+            },
+            {
+              day: "Day 4",
+              focus: "Prototyping",
+              tasks: "Build an interactive Figma prototype showing key interactions.",
+              challenge: "Maintain consistency across typography, colors, and spacing.",
+              feedback:
+                "Nice microinteractions—document design tokens for development handoff."
+            },
+            {
+              day: "Day 5",
+              focus: "Usability Testing",
+              tasks: "Run moderated usability tests with three participants.",
+              challenge: "Note observations while staying attentive to the participant.",
+              feedback:
+                "Captured key quotes—cluster feedback into themes for faster synthesis."
+            },
+            {
+              day: "Day 6",
+              focus: "Iteration",
+              tasks: "Update designs using test insights and improve accessibility (contrast, alt text, keyboard flow).",
+              challenge: "Meet accessibility standards without losing visual appeal.",
+              feedback:
+                "Contrast adjustments work—add guidance about keyboard navigation to the notes."
+            },
+            {
+              day: "Day 7",
+              focus: "Presentation",
+              tasks: "Deliver a final presentation summarizing research, design decisions, and success metrics.",
+              challenge: "Explain the design process to a non-designer audience.",
+              feedback:
+                "Great storytelling—next time include metrics that will show impact after launch."
+            }
+          ]
+        },
+        "data-analyst": {
+          name: "Data Analyst",
+          summary: "Turns raw data into clear insights that guide business decisions.",
+          roadmap: {
+            education: [
+              "Finish high school with a strong focus on math and statistics.",
+              "Pursue a degree in statistics, economics, business analytics, or a related field.",
+              "Take dedicated courses in probability, data visualization, and database management.",
+              "Join analytics internships or campus roles that involve reporting and dashboards."
+            ],
+            skills: [
+              "Master Excel or Google Sheets for quick analysis and dashboarding.",
+              "Write SQL queries to extract and transform data from relational databases.",
+              "Use Python or R for deeper analysis, including data cleaning and visualization.",
+              "Tell stories with data by matching visuals to the insights they convey.",
+              "Develop business context so recommendations stay relevant to stakeholders."
+            ],
+            certifications: [
+              "Google Data Analytics Professional Certificate to validate foundational skills.",
+              "Microsoft Power BI Data Analyst when you’re ready to publish dashboards."
+            ],
+            milestones: [
+              "Build a portfolio featuring three end-to-end data projects with code and presentation slides.",
+              "Volunteer for analytics tasks in a club, nonprofit, or small business.",
+              "Join a Kaggle challenge to practice real-world data cleaning and modeling.",
+              "Present findings to a non-technical audience and gather feedback on clarity."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Orientation",
+              tasks: "Review the company’s key performance indicators and explore available datasets.",
+              challenge: "Understand data sources quickly and note any missing definitions.",
+              feedback:
+                "Nice data catalog—follow up with the BI team to confirm metric definitions."
+            },
+            {
+              day: "Day 2",
+              focus: "Data Cleaning",
+              tasks: "Clean raw datasets, handle missing values, and document transformation steps.",
+              challenge: "Choose the right imputation or removal strategy for each column.",
+              feedback:
+                "Good justification—log your cleanup steps in a README for reproducibility."
+            },
+            {
+              day: "Day 3",
+              focus: "SQL Exploration",
+              tasks: "Write SQL queries to answer business questions from stakeholders.",
+              challenge: "Manage nested joins while keeping performance in mind.",
+              feedback:
+                "Efficient queries—add comments so future analysts understand your logic."
+            },
+            {
+              day: "Day 4",
+              focus: "Dashboard Building",
+              tasks: "Design a Tableau or Power BI dashboard that highlights top insights.",
+              challenge: "Select chart types that tell the story without clutter.",
+              feedback:
+                "Cohesive narrative—ensure the color palette works for colorblind viewers."
+            },
+            {
+              day: "Day 5",
+              focus: "Exploratory Analysis",
+              tasks: "Run exploratory analysis to uncover trends, anomalies, and correlations.",
+              challenge: "Avoid confirmation bias by testing multiple angles.",
+              feedback:
+                "You questioned assumptions—include confidence intervals where possible."
+            },
+            {
+              day: "Day 6",
+              focus: "Executive Storytelling",
+              tasks: "Prepare a concise slide deck tailored for leadership.",
+              challenge: "Translate numbers into actions stakeholders can take immediately.",
+              feedback:
+                "Clear recommendations—attach an appendix explaining your methodology."
+            },
+            {
+              day: "Day 7",
+              focus: "Stakeholder Presentation",
+              tasks: "Deliver the insights live and respond to follow-up questions.",
+              challenge: "Handle unexpected questions without losing confidence.",
+              feedback:
+                "Stayed calm—send a one-page recap email summarizing decisions made today."
+            }
+          ]
+        },
+        "mechanical-engineer": {
+          name: "Mechanical Engineer",
+          summary: "Designs and improves physical machines, systems, and products.",
+          roadmap: {
+            education: [
+              "Excel in high school math, physics, and engineering clubs.",
+              "Earn a mechanical engineering degree accredited by the proper board in your region.",
+              "Take electives in materials science, thermodynamics, and control systems based on your interests.",
+              "Secure co-ops or internships to gain manufacturing and testing experience."
+            ],
+            skills: [
+              "Use CAD tools such as SolidWorks or AutoCAD to model components precisely.",
+              "Understand mechanics, thermodynamics, and fluid dynamics to predict system behavior.",
+              "Run simulations and basic finite element analysis to test designs virtually.",
+              "Collaborate with manufacturing teams and learn design-for-manufacturability principles.",
+              "Practice technical communication through reports and presentations."
+            ],
+            certifications: [
+              "Certified SOLIDWORKS Associate (CSWA) to prove CAD fundamentals.",
+              "Engineer-in-Training (EIT) after passing the Fundamentals of Engineering (FE) exam."
+            ],
+            milestones: [
+              "Join engineering clubs or competitions such as Formula SAE or robotics.",
+              "Build prototypes or 3D prints to apply classroom theory.",
+              "Pass the FE exam and plan for professional licensure after required work experience.",
+              "Lead a cross-functional project that moves from concept to testing."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Safety & Orientation",
+              tasks: "Tour the plant, review safety protocols, and learn about the product line.",
+              challenge: "Absorb technical details while following every safety requirement.",
+              feedback:
+                "Documented safety steps well—prepare questions about machinery tolerances for tomorrow."
+            },
+            {
+              day: "Day 2",
+              focus: "CAD Modeling",
+              tasks: "Model a component update in CAD while respecting dimensional constraints.",
+              challenge: "Balance performance improvements with manufacturing limits.",
+              feedback:
+                "Model looks accurate—add annotations that explain your design decisions."
+            },
+            {
+              day: "Day 3",
+              focus: "Simulation",
+              tasks: "Run a finite element analysis to compare stress under different loads.",
+              challenge: "Set boundary conditions and mesh density properly.",
+              feedback:
+                "Good mesh choices—document material selection in the progress report."
+            },
+            {
+              day: "Day 4",
+              focus: "Manufacturing Review",
+              tasks: "Review the prototype with manufacturing and gather feedback.",
+              challenge: "Align design goals with production capabilities.",
+              feedback:
+                "Collaboration was strong—log every manufacturing comment in the change tracker."
+            },
+            {
+              day: "Day 5",
+              focus: "Risk Assessment",
+              tasks: "Conduct a failure mode and effects analysis (FMEA).",
+              challenge: "Prioritize risks by likelihood and impact without bias.",
+              feedback:
+                "Risk matrix is clear—propose mitigation steps with realistic timelines."
+            },
+            {
+              day: "Day 6",
+              focus: "Testing",
+              tasks: "Prepare a test plan and run a small-scale validation test.",
+              challenge: "Ensure measurements are repeatable and well documented.",
+              feedback:
+                "Test setup looked disciplined—include calibration notes for future runs."
+            },
+            {
+              day: "Day 7",
+              focus: "Executive Summary",
+              tasks: "Present findings to the lead engineer and recommend next steps.",
+              challenge: "Align the summary with larger project goals.",
+              feedback:
+                "Summary was precise—suggest how you’ll iterate on the design after today."
+            }
+          ]
+        },
+        nurse: {
+          name: "Nurse",
+          summary: "Provides compassionate patient care and coordinates with healthcare teams.",
+          roadmap: {
+            education: [
+              "Graduate high school with a focus on biology, chemistry, and health sciences.",
+              "Enroll in an accredited nursing program (ADN or BSN) that includes clinical rotations.",
+              "Complete coursework in anatomy, pharmacology, and patient care practices.",
+              "Pass the NCLEX-RN licensure exam after graduation."
+            ],
+            skills: [
+              "Practice thorough patient assessments, including vital signs and health histories.",
+              "Develop clear communication and empathy for patients and families.",
+              "Learn clinical procedures such as IV insertion, wound care, and medication administration.",
+              "Master electronic health record charting and time management.",
+              "Build resilience and self-care routines to support long-term well-being."
+            ],
+            certifications: [
+              "Basic Life Support (BLS) certification as soon as possible.",
+              "Advanced Cardiac Life Support (ACLS) after building foundational clinical experience.",
+              "Pursue specialty certifications (pediatrics, critical care, etc.) based on career goals."
+            ],
+            milestones: [
+              "Complete diverse clinical rotations across different units.",
+              "Secure an RN position and request mentorship from experienced nurses.",
+              "Attend continuing education workshops and seminars regularly.",
+              "Consider BSN-to-MSN or nurse practitioner pathways for advanced roles."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Unit Orientation",
+              tasks: "Learn unit protocols, review safety procedures, and shadow a senior nurse.",
+              challenge: "Manage information overload while staying attentive to patients.",
+              feedback:
+                "Excellent note-taking—ask for quick-reference protocol sheets to review tonight."
+            },
+            {
+              day: "Day 2",
+              focus: "Patient Assignments",
+              tasks: "Care for two patients under supervision, focusing on vital checks and charting.",
+              challenge: "Chart efficiently without missing important details.",
+              feedback:
+                "Documentation was accurate—use templates and shortcuts to save time."
+            },
+            {
+              day: "Day 3",
+              focus: "Medication Safety",
+              tasks: "Administer medications with mentor oversight and review the five rights checklist.",
+              challenge: "Double-check dosages while communicating calmly with patients.",
+              feedback:
+                "Safe practice—keep verbalizing each safety check out loud to stay focused."
+            },
+            {
+              day: "Day 4",
+              focus: "Care Planning",
+              tasks: "Join the interdisciplinary care planning meeting and share patient updates.",
+              challenge: "Speak up confidently about patient needs.",
+              feedback:
+                "Your insights guided the plan—prepare bullet points before future meetings."
+            },
+            {
+              day: "Day 5",
+              focus: "Acute Response",
+              tasks: "Handle an unexpected patient change and escalate appropriately.",
+              challenge: "Stay calm and follow emergency protocols without hesitation.",
+              feedback:
+                "Excellent response—debrief after shift to process emotions and reinforce learning."
+            },
+            {
+              day: "Day 6",
+              focus: "Patient Education",
+              tasks: "Teach a patient about discharge instructions and home care steps.",
+              challenge: "Explain complex information in simple terms.",
+              feedback:
+                "Clear explanation—use the teach-back method to confirm understanding."
+            },
+            {
+              day: "Day 7",
+              focus: "Reflection",
+              tasks: "Reflect with your mentor, celebrate wins, and set a continuing education plan.",
+              challenge: "Be honest about areas that still feel challenging.",
+              feedback:
+                "Reflection was thoughtful—look for an IV therapy workshop to keep growing."
+            }
+          ]
+        },
+        "financial-analyst": {
+          name: "Financial Analyst",
+          summary: "Evaluates financial data to guide investments and company strategy.",
+          roadmap: {
+            education: [
+              "Complete high school with advanced math, economics, and accounting electives.",
+              "Earn a finance, economics, or accounting degree with strong quantitative coursework.",
+              "Study financial modeling, valuation, and corporate finance.",
+              "Land internships in banking, corporate finance, or consulting to apply skills."
+            ],
+            skills: [
+              "Build and audit Excel models with linked financial statements.",
+              "Analyze income statements, balance sheets, and cash flows to spot trends.",
+              "Forecast revenue and expenses using historical data and reasonable assumptions.",
+              "Conduct valuation using discounted cash flow and comparable company methods.",
+              "Communicate clearly with stakeholders through decks and verbal briefings."
+            ],
+            certifications: [
+              "Bloomberg Market Concepts certificate early in your journey.",
+              "Chartered Financial Analyst (CFA) Level I after gaining foundational experience."
+            ],
+            milestones: [
+              "Complete an investment or corporate finance internship with measurable outcomes.",
+              "Build sample valuation models and pitch decks for practice.",
+              "Follow market news daily and write quick summaries to sharpen analysis.",
+              "Prepare and deliver a mock investment pitch to peers or mentors."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Company Deep Dive",
+              tasks: "Review the company’s financial statements and understand the business model.",
+              challenge: "Interpret industry terms without getting lost in jargon.",
+              feedback:
+                "Captured key revenue drivers—create a mini glossary for new terminology."
+            },
+            {
+              day: "Day 2",
+              focus: "Financial Modeling",
+              tasks: "Build a three-statement financial model in Excel.",
+              challenge: "Link statements accurately so the balance sheet balances.",
+              feedback:
+                "Model ties out—add a sensitivity tab to test different scenarios."
+            },
+            {
+              day: "Day 3",
+              focus: "Comparable Analysis",
+              tasks: "Analyze industry comparables and summarize valuation multiples.",
+              challenge: "Select the most relevant peers and justify each choice.",
+              feedback:
+                "Good peer list—explain selection criteria in your supporting notes."
+            },
+            {
+              day: "Day 4",
+              focus: "Investment Memo",
+              tasks: "Draft a concise investment memo highlighting opportunities and risks.",
+              challenge: "Prioritize the most important insights without flooding readers with data.",
+              feedback:
+                "Memo is focused—add the top three risks and how we’ll monitor them."
+            },
+            {
+              day: "Day 5",
+              focus: "Presentation",
+              tasks: "Present your forecast to a supervisor and respond to questions.",
+              challenge: "Defend assumptions with evidence and stay calm under pressure.",
+              feedback:
+                "Handled objections well—prepare backup data tables for follow-up."
+            },
+            {
+              day: "Day 6",
+              focus: "Market Monitoring",
+              tasks: "Track market news and update your model as needed.",
+              challenge: "React quickly without over-adjusting to every headline.",
+              feedback:
+                "Smart adjustments—log each change with a short rationale."
+            },
+            {
+              day: "Day 7",
+              focus: "Weekly Recap",
+              tasks: "Provide an end-of-week recap report with clear next steps.",
+              challenge: "Highlight actionable insights instead of just summarizing data.",
+              feedback:
+                "Clear recap—suggest focus areas for next week at the end of your report."
+            }
+          ]
+        },
+        "product-manager": {
+          name: "Product Manager",
+          summary: "Guides cross-functional teams to build products that solve real customer problems.",
+          roadmap: {
+            education: [
+              "Graduate high school with experiences in leadership, debate, or entrepreneurship.",
+              "Earn a degree in business, engineering, design, or another field that teaches problem-solving.",
+              "Take courses about customer research, project management, and analytics.",
+              "Gain cross-functional experience through internships with product, marketing, or engineering teams."
+            ],
+            skills: [
+              "Practice customer discovery interviews to uncover pain points.",
+              "Use prioritization frameworks like RICE or MoSCoW to make trade-offs.",
+              "Plan roadmaps and write clear product requirement documents (PRDs).",
+              "Understand agile ceremonies and how to collaborate with scrum teams.",
+              "Analyze product metrics and communicate a compelling story to leadership."
+            ],
+            certifications: [
+              "Scrum Product Owner certification to understand agile basics.",
+              "Pragmatic Institute foundations or similar product strategy programs."
+            ],
+            milestones: [
+              "Build a side project or case study that walks through discovery, delivery, and results.",
+              "Lead a small product launch or feature release with a cross-functional team.",
+              "Create a product portfolio showcasing research, strategy, and learning.",
+              "Mentor others or host a workshop to solidify your understanding."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Vision Alignment",
+              tasks: "Meet stakeholders, map the product vision, and note success metrics.",
+              challenge: "Align multiple perspectives without losing focus.",
+              feedback:
+                "Sharp questions—summarize stakeholder goals in a single shared document."
+            },
+            {
+              day: "Day 2",
+              focus: "User Discovery",
+              tasks: "Conduct user interviews and capture pain points in detail.",
+              challenge: "Stay neutral and let customers lead the conversation.",
+              feedback:
+                "Insightful notes—highlight the top three themes for tomorrow’s sync."
+            },
+            {
+              day: "Day 3",
+              focus: "PRD Drafting",
+              tasks: "Create a product requirements document with problem, goals, and feature details.",
+              challenge: "Balance enough detail for engineering while staying concise.",
+              feedback:
+                "PRD reads clearly—add success metrics and launch criteria."
+            },
+            {
+              day: "Day 4",
+              focus: "Backlog Grooming",
+              tasks: "Run a backlog session and prioritize stories collaboratively.",
+              challenge: "Make trade-offs when everything feels important.",
+              feedback:
+                "Facilitation was strong—reference RICE scoring to justify priorities."
+            },
+            {
+              day: "Day 5",
+              focus: "Analytics Review",
+              tasks: "Review product analytics and spot trends worth exploring.",
+              challenge: "Avoid analysis paralysis by focusing on impactful metrics.",
+              feedback:
+                "Sharp insights—outline experiment ideas to validate your hypotheses."
+            },
+            {
+              day: "Day 6",
+              focus: "Launch Coordination",
+              tasks: "Partner with marketing to shape the launch plan and messaging.",
+              challenge: "Communicate trade-offs across teams and confirm responsibilities.",
+              feedback:
+                "Collaborative tone—send a follow-up email confirming decisions and owners."
+            },
+            {
+              day: "Day 7",
+              focus: "Roadmap Presentation",
+              tasks: "Present the upcoming roadmap to leadership and gather feedback.",
+              challenge: "Handle pushback while keeping the conversation constructive.",
+              feedback:
+                "Stayed composed—update the roadmap with today’s decisions and share widely."
+            }
+          ]
+        },
+        "environmental-scientist": {
+          name: "Environmental Scientist",
+          summary: "Studies ecosystems and guides decisions that protect the environment.",
+          roadmap: {
+            education: [
+              "Graduate high school with strong biology, chemistry, and earth science coursework.",
+              "Earn a degree in environmental science, ecology, or a related discipline.",
+              "Take labs focused on field methods, geographic information systems, and statistics.",
+              "Join research projects or volunteer with conservation groups to gain field hours."
+            ],
+            skills: [
+              "Collect soil, water, and air samples accurately while following safety protocols.",
+              "Use GIS software to map findings and plan interventions.",
+              "Analyze lab results and interpret environmental regulations.",
+              "Write clear reports and present findings to both technical and community audiences.",
+              "Collaborate with stakeholders who may have competing interests."
+            ],
+            certifications: [
+              "Hazardous Waste Operations and Emergency Response (HAZWOPER) for field safety.",
+              "Specialized GIS certificates to strengthen mapping credentials."
+            ],
+            milestones: [
+              "Volunteer for local conservation or water quality monitoring programs.",
+              "Intern with environmental agencies or consulting firms.",
+              "Publish a field study report or conference poster.",
+              "Present findings to a community group and facilitate a discussion on next steps."
+            ]
+          },
+          simulation: [
+            {
+              day: "Day 1",
+              focus: "Project Scope",
+              tasks: "Review the wetland assessment brief and outline regulatory requirements.",
+              challenge: "Understand the policy context and reporting deadlines quickly.",
+              feedback:
+                "Prepared timeline looks solid—flag any permit deadlines that feel tight."
+            },
+            {
+              day: "Day 2",
+              focus: "Field Sampling",
+              tasks: "Collect soil and water samples while logging GPS coordinates.",
+              challenge: "Keep data accurate even in unpredictable field conditions.",
+              feedback:
+                "Detailed notes—double-check coordinates each evening for peace of mind."
+            },
+            {
+              day: "Day 3",
+              focus: "Lab Analysis",
+              tasks: "Run lab tests for contaminants and record measurements carefully.",
+              challenge: "Follow protocols exactly to avoid contamination.",
+              feedback:
+                "Results look precise—add notes about control samples in your lab book."
+            },
+            {
+              day: "Day 4",
+              focus: "GIS Mapping",
+              tasks: "Build a GIS map illustrating impacted zones and nearby communities.",
+              challenge: "Manage map layers without making visuals cluttered.",
+              feedback:
+                "Map layers are clear—include a concise legend for stakeholders."
+            },
+            {
+              day: "Day 5",
+              focus: "Impact Report",
+              tasks: "Draft sections of the environmental impact report with visuals and plain-language summaries.",
+              challenge: "Explain scientific findings so non-scientists can act on them.",
+              feedback:
+                "Readable summary—add charts to highlight trends quickly."
+            },
+            {
+              day: "Day 6",
+              focus: "Community Dialogue",
+              tasks: "Meet with a community group to gather concerns and answer questions.",
+              challenge: "Address emotional reactions while staying factual.",
+              feedback:
+                "Empathetic listening—document the commitments made during the conversation."
+            },
+            {
+              day: "Day 7",
+              focus: "Recommendations",
+              tasks: "Present mitigation ideas to your supervisor and propose a monitoring plan.",
+              challenge: "Balance scientific rigor with realistic budgets and timelines.",
+              feedback:
+                "Practical plan—include a follow-up monitoring schedule to keep momentum."
+            }
+          ]
+        }
+      };
+
+      const careerGrid = document.getElementById("careerGrid");
+      const detailsPanel = document.getElementById("detailsPanel");
+      const placeholder = document.getElementById("placeholder");
+      let activeCardId = null;
+
+      function buildList(items) {
+        return `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+      }
+
+      function buildRoadmap(roadmap) {
+        const sections = [
+          { title: "Education", items: roadmap.education },
+          { title: "Skills to Build", items: roadmap.skills },
+          { title: "Helpful Certifications", items: roadmap.certifications },
+          { title: "Career Milestones", items: roadmap.milestones }
+        ];
+
+        return `
+          <div>
+            <h3 class="section-title">Roadmap Overview</h3>
+            <div class="roadmap-grid">
+              ${sections
+                .map(
+                  (section) => `
+                    <div class="roadmap-card">
+                      <h4>${section.title}</h4>
+                      ${buildList(section.items)}
+                    </div>
+                  `
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      function buildSimulation(simulation) {
+        return `
+          <div>
+            <h3 class="section-title">7-Day Internship Simulation</h3>
+            <div class="simulation-grid">
+              ${simulation
+                .map(
+                  (day) => `
+                    <article class="simulation-card">
+                      <span class="badge-day">${day.day}</span>
+                      <h4>${day.focus}</h4>
+                      <p><strong>Tasks:</strong> ${day.tasks}</p>
+                      <p><strong>Challenge:</strong> ${day.challenge}</p>
+                      <p><strong>Mentor Feedback:</strong> ${day.feedback}</p>
+                    </article>
+                  `
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderCareerDetails(key) {
+        const career = careerData[key];
+        if (!career) return;
+
+        if (placeholder) {
+          placeholder.remove();
+        }
+
+        detailsPanel.innerHTML = `
+          <header>
+            <h2 class="section-title" style="margin-bottom: 1.5rem;">
+              ${career.name}
+            </h2>
+            <p style="color: var(--text-soft); font-size: 1.05rem; margin: 0; line-height: 1.7;">
+              ${career.summary}
+            </p>
+          </header>
+          ${buildRoadmap(career.roadmap)}
+          ${buildSimulation(career.simulation)}
+        `;
+      }
+
+      function handleCardClick(event) {
+        const card = event.currentTarget;
+        const key = card.dataset.key;
+
+        if (activeCardId === key) return;
+
+        const previousActive = document.querySelector(".career-card.active");
+        if (previousActive) {
+          previousActive.classList.remove("active");
+        }
+
+        card.classList.add("active");
+        activeCardId = key;
+        renderCareerDetails(key);
+      }
+
+      function initCareerCards() {
+        Object.entries(careerData).forEach(([key, career]) => {
+          const card = document.createElement("button");
+          card.className = "career-card";
+          card.type = "button";
+          card.dataset.key = key;
+          card.setAttribute("role", "listitem");
+          card.innerHTML = `
+            <h3>${career.name}</h3>
+            <p>${career.summary}</p>
+          `;
+          card.addEventListener("click", handleCardClick);
+          careerGrid.appendChild(card);
+        });
+      }
+
+      initCareerCards();
+    </script>
+  </body>
+</html>
 
