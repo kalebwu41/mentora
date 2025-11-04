@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mentora — Interactive Career Roadmaps & Internship Simulator</title>
+  <style>
+    :root{
+      --bg:#f5fbff;
+      --card:#ffffff;
+      --accent:#63b3ed;
+      --accent-dark:#2b86d8;
+      --muted:#6b7280;
+      --glass: rgba(255,255,255,0.75);
+      --success:#22c55e;
+      --danger:#ef4444;
+      --shadow: 0 10px 30px rgba(43,134,216,0.08);
+      --radius:14px;
+      --gap:16px;
+      font-family: Inter, "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    html,body{height:100%; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); margin:0; color:#0f172a;}
+    .container{max-width:1100px;margin:36px auto;padding:28px;}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+    .logo{
+      width:68px;height:68px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;box-shadow:var(--shadow)
+    }
+    h1{margin:0;font-size:22px}
+    p.lead{margin:0;color:var(--muted)}
+    .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-top:14px}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    @media(max-width:920px){ .grid{grid-template-columns:1fr} .card{margin-bottom:14px} }
+
+    /* navigation / breadcrumbs */
+    .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .breadcrumbs{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+    .crumb{cursor:pointer;padding:6px 10px;border-radius:8px}
+    .crumb.active{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:white}
+
+    /* Start form */
+    .form-row{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+    label{font-size:13px;color:var(--muted);min-width:125px}
+    select,input,textarea{padding:10px;border-radius:10px;border:1px solid #e6eefb;background:transparent;outline:none;width:100%}
+    button.btn{background:var(--accent);border:none;color:white;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;box-shadow:0 6px 18px rgba(43,134,216,0.12)}
+    button.ghost{background:transparent;border:1px solid #e6eefb;color:var(--accent-dark);padding:8px 12px;border-radius:10px;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* Roadmap */
+    .roadmap-list{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+    .roadmap-step{border-left:4px solid #e6f2ff;padding:14px 12px 14px 18px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfeff);display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .roadmap-step .left{max-width:75%}
+    .roadmap-step h3{margin:0;font-size:15px}
+    .roadmap-step p{margin:6px 0 0;color:var(--muted);font-size:14px}
+    .roadmap-meta{font-size:13px;color:var(--muted)}
+
+    /* internship */
+    .task{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px;border-radius:8px;border:1px solid #f1f8ff;background:#fbfeff;margin-bottom:10px}
+    .task .meta{flex:1}
+    .task h4{margin:0 0 6px 0;font-size:15px}
+    .task p{margin:0;color:var(--muted);font-size:13px}
+    .task-actions{display:flex;gap:8px;align-items:center}
+
+    /* progress */
+    .progress{height:12px;background:#e9f2ff;border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .5s ease}
+
+    /* modal */
+    .overlay{position:fixed;inset:0;background:rgba(8,20,40,0.5);display:flex;align-items:center;justify-content:center;z-index:60;opacity:0;pointer-events:none;transition:opacity .18s;}
+    .overlay.open{opacity:1;pointer-events:auto}
+    .modal{width:720px;max-width:94%;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 30px 60px rgba(2,6,23,0.2);transform:translateY(12px);transition:transform .18s}
+    .overlay.open .modal{transform:none}
+    .modal h3{margin:0 0 8px 0}
+    .modal .hint{font-size:13px;color:var(--muted);margin-bottom:10px}
+
+    /* small UI tweaks */
+    .controls{display:flex;gap:10px;align-items:center}
+    .right-col .card .muted{margin-bottom:8px}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#f1f8ff;color:var(--accent-dark);font-weight:600}
+    .mcq{display:flex;flex-direction:column;gap:8px}
+    .mcq button{align-items:flex-start}
+    .mcq .option{padding:10px;border-radius:8px;border:1px solid #eef6ff;background:#fff;cursor:pointer}
+    .mcq .option.selected{background:linear-gradient(90deg,var(--accent),var(--accent-dark));color:white;border-color:transparent}
+
+    /* animations */
+    .fade-in{animation:fadeIn .28s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">M</div>
+      <div style="flex:1">
+        <h1>Mentora</h1>
+        <p class="lead">Interactive career roadmaps and internship simulations</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="badge" id="userExpBadge">Beginner</div>
+        <button class="ghost" id="resetBtn" title="Reset saved progress">Reset</button>
+      </div>
+    </header>
+
+    <div class="nav">
+      <div class="breadcrumbs" id="breadcrumbs">
+        <div class="crumb active" data-view="start">Start</div>
+        <div class="crumb" data-view="roadmap">Roadmap</div>
+        <div class="crumb" data-view="internship">Internship</div>
+      </div>
+      <div class="controls" id="navControls">
+        <button class="ghost" id="backBtn" disabled>Back</button>
+        <button class="btn" id="nextBtn">Next</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <main>
+        <div id="viewStart" class="card view fade-in">
+          <h2 style="margin-top:0">Get started</h2>
+          <p class="small">Tell Mentora about your experience and choose a career to generate a roadmap and internship tasks. Your progress saves locally in this browser.</p>
+
+          <div style="margin-top:14px">
+            <div class="form-row">
+              <label>Experience</label>
+              <select id="experience">
+                <option value="beginner">Beginner — little or no experience</option>
+                <option value="intermediate">Intermediate — some courses or projects</option>
+                <option value="advanced">Advanced — internships or strong portfolio</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label>Career</label>
+              <select id="careerSelect">
+                <option value="Software Engineer">Software Engineer</option>
+                <option value="Sales">Sales</option>
+                <option value="Data Scientist">Data Scientist</option>
+              </select>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:12px">
+              <button class="btn" id="generateBtn">Generate Roadmap</button>
+              <button class="ghost" id="examplesBtn">Load Example</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="viewRoadmap" class="card view" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+            <div>
+              <h2 id="careerTitle" style="margin:0">Roadmap</h2>
+              <p class="small" id="careerSummary">Summary text</p>
+            </div>
+            <div style="min-width:220px">
+              <div class="muted">Your selected career</div>
+              <div id="sideCareer" style="font-weight:700;margin-bottom:8px">—</div>
+              <div class="muted">Experience</div>
+              <div id="sideExp" class="muted" style="margin-bottom:8px">—</div>
+              <div class="muted">Progress</div>
+              <div style="margin-top:8px" class="progress"><i id="progressBar" style="width:0%"></i></div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px">
+                <div id="doneCount" class="small">0 tasks done</div>
+                <div id="totalTasks" class="small">0 tasks</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="roadmap-list" id="roadmapView"></div>
+        </div>
+
+        <div id="viewInternship" class="card view" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+            <div>
+              <h2 style="margin:0">Internship Simulator</h2>
+              <p class="small">Complete mock tasks. Tasks support short answer evaluation and multiple-choice checks.</p>
+            </div>
+            <div>
+              <div class="muted">Current: <span id="currentCareerHeader">—</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" id="internshipView"></div>
+        </div>
+
+      </main>
+
+      <aside class="right-col">
+        <div class="card">
+          <h3 style="margin-top:0">Quick Info</h3>
+          <div style="margin-top:8px">
+            <div class="muted">Roadmap</div>
+            <div id="quickCareer" style="font-weight:700;margin-bottom:8px">—</div>
+            <div class="muted">Internship Completion</div>
+            <div style="margin-top:8px" class="progress"><i id="sideProgress" style="width:0%"></i></div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px">
+              <div id="quickDone" class="small">0 done</div>
+              <div id="quickTotal" class="small">0 tasks</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h3 style="margin-top:0">How it works</h3>
+          <p class="muted">Choose experience & career. Generate a roadmap. Go to Internship tab to open tasks. Each task provides immediate mentor-style feedback. Everything is stored locally.</p>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div class="muted">Tip: you can edit the roadmaps & task data in the script to add more careers or tweak evaluation rules.</div>
+    </footer>
+  </div>
+
+  <!-- modal -->
+  <div id="overlay" class="overlay">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div style="flex:1">
+          <h3 id="modalTitle">Task title</h3>
+          <div class="hint" id="modalHint">Short instructions</div>
+        </div>
+        <div style="margin-left:12px">
+          <button class="ghost" id="closeModal">Close</button>
+        </div>
+      </div>
+
+      <div id="modalBody" style="margin-top:12px"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div id="modalFeedback" class="muted"></div>
+        <div style="display:flex;gap:8px">
+          <button class="ghost" id="saveDraftBtn">Save Draft</button>
+          <button class="btn" id="submitTaskBtn">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* --- Data store (same structure, enriched) --- */
+const ROADMAPS = {
+  "Software Engineer": {
+    summary: "Build code, learn core CS concepts, build projects, contribute to teams, get internships, and scale to professional roles.",
+    steps: [
+      {title:"Foundations (0–6 months)", details:"Learn Python or JavaScript, work through basic algorithms, and practice small projects."},
+      {title:"Core Skills (6–12 months)", details:"Master a language, web basics (HTML/CSS), version control (Git), and build 2 projects."},
+      {title:"Intermediate (1–2 years)", details:"Contribute to open source or group projects, learn frameworks (React/Node), and prepare for internships."},
+      {title:"Internship / First Job", details:"Apply, prepare portfolio, practice interviews, and do a technical internship."},
+      {title:"Growth", details:"Learn system design basics, improve data structures, and take ownership of larger features."}
+    ],
+    tasks:[
+      {type:'short', title:"Set up dev environment", brief:"Install Git, Node (or Python), and clone a starter repo. Describe your setup and first steps.", keywords:['git','node','python','clone','commit'], feedbackGood:"Nice setup — you can commit often and write clear messages.", feedbackBad:"Make sure Git is configured (name/email) and you can push to remote."},
+      {type:'mcq', title:"Identify Git command", brief:"Which command creates a new branch locally?", options:['git init','git branch <name>','git commit -m','git push origin main'], answerIndex:1, feedbackGood:"Correct — branching lets you isolate work.", feedbackBad:"Not quite. Think about commands that create branches locally."},
+      {type:'short', title:"Add a small feature", brief:"Explain how you'd add a search filter to a list and what tests you'd write.", keywords:['test','unit','filter','input','edge','debounce','search'], feedbackGood:"Nice — you named tests and edge cases.", feedbackBad:"Add explicit tests and explain props/state or inputs."},
+      {type:'short', title:"Code review & refactor", brief:"Describe what you'd look for when reviewing a PR and one refactor you'd suggest.", keywords:['readability','tests','performance','naming','comments'], feedbackGood:"Good review points — you were specific and respectful.", feedbackBad:"Try to point to concrete changes and explain tradeoffs."}
+    ]
+  },
+
+  "Sales": {
+    summary:"Learn customer communication, product knowledge, prospecting, and closing skills — start in retail or B2B entry roles and scale to account management.",
+    steps:[
+      {title:"Foundations", details:"Learn communication, active listening, and basic sales processes."},
+      {title:"Practice & Early Roles", details:"Work retail or customer-facing positions, join DECA, and practice cold outreach."},
+      {title:"Develop Skills", details:"Learn negotiation, CRM basics, and build a lead list."},
+      {title:"Senior & Management", details:"Manage accounts, set strategy, and mentor new reps."}
+    ],
+    tasks:[
+      {type:'short', title:"Customer discovery call", brief:"Write an email intro to a prospective client and propose a short call.", keywords:['subject','call','meeting','value','cta'], feedbackGood:"Clear subject and CTA — nice personalization.", feedbackBad:"Avoid generic language — personalize with a pain point."},
+      {type:'short', title:"Prepare a small proposal", brief:"Draft a 1-page solution for a client with pricing options.", keywords:['pricing','roi','timeline','next steps'], feedbackGood:"Great structure and ROI focus.", feedbackBad:"Add numbers or specific next steps to increase clarity."},
+      {type:'mcq', title:"Follow-up cadence", brief:"What's a balanced follow-up cadence over two weeks?", options:['Every day','Once per week','3-4 touches: mixed emails/calls','Only when they reply'], answerIndex:2, feedbackGood:"Good balance between persistence and respect.", feedbackBad:"Too aggressive or too passive—mix channels and timing."}
+    ]
+  },
+
+  "Data Scientist": {
+    summary:"Combine programming, statistics, and storytelling with data to build models and dashboards that answer business questions.",
+    steps:[
+      {title:"Foundations", details:"Learn Python, statistics, pandas, and data cleaning basics."},
+      {title:"Projects", details:"Explore datasets, do visualizations, and build simple models."},
+      {title:"Applied Experience", details:"Complete internships, Kaggle competitions, or freelance projects."},
+      {title:"Scale & Production", details:"Deploy models, productionize data pipelines, and collaborate with engineers."}
+    ],
+    tasks:[
+      {type:'short', title:"Clean a dataset", brief:"Download a small dataset and create a clean CSV with explained steps.", keywords:['missing','outlier','impute','drop','normalize','clean'], feedbackGood:"Good documentation of cleaning steps.", feedbackBad:"Add checks and reasons for dropped rows or imputation."},
+      {type:'short', title:"Explore & visualize", brief:"Create 3 charts that reveal insights. Describe each chart and what it shows.", keywords:['chart','visual','insight','label','axis'], feedbackGood:"Charts tell a clear story and include labels.", feedbackBad:"Avoid clutter and explain the insight for stakeholders."},
+      {type:'mcq', title:"Model evaluation", brief:"Which metric is best for imbalanced classification?", options:['Accuracy','F1-score','MSE','R-squared'], answerIndex:1, feedbackGood:"F1 is better when classes are imbalanced.", feedbackBad:"Accuracy can be misleading when classes are imbalanced."}
+    ]
+  }
+};
+
+/* --- State and persistence --- */
+const STORAGE_KEY = 'mentora_state_v1';
+let state = {
+  career: null,
+  experience: 'beginner',
+  completedTasks: {}, // { "Software Engineer:0": {submitted:true,score:80} }
+  drafts: {} // saved user drafts per task
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) state = Object.assign(state, JSON.parse(raw));
+  } catch(e){ console.warn('failed to load', e); }
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function resetState(){
+  localStorage.removeItem(STORAGE_KEY);
+  state = { career:null, experience:'beginner', completedTasks:{}, drafts:{} };
+  renderAll();
+}
+
+/* --- UI helpers --- */
+const el = id => document.getElementById(id);
+function showView(name){
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  el('viewStart').style.display = name === 'start' ? 'block' : 'none';
+  el('viewRoadmap').style.display = name === 'roadmap' ? 'block' : 'none';
+  el('viewInternship').style.display = name === 'internship' ? 'block' : 'none';
+
+  // crumbs
+  document.querySelectorAll('.crumb').forEach(c => {
+    c.classList.toggle('active', c.dataset.view === name);
+  });
+
+  // update next/back state
+  const order = ['start','roadmap','internship'];
+  const idx = order.indexOf(name);
+  el('backBtn').disabled = idx <= 0;
+  el('nextBtn').disabled = idx >= order.length-1;
+
+  // persist last view
+  localStorage.setItem('mentora_last_view', name);
+}
+
+/* --- Render functions --- */
+function renderRoadmap(careerKey){
+  if(!careerKey) return;
+  const data = ROADMAPS[careerKey];
+  el('careerTitle').textContent = careerKey;
+  el('careerSummary').textContent = data.summary;
+  el('sideCareer').textContent = careerKey;
+  el('sideExp').textContent = state.experience[0].toUpperCase() + state.experience.slice(1);
+  el('sideCareer').textContent = careerKey;
+  el('sideExp').textContent = state.experience;
+
+  const container = el('roadmapView');
+  container.innerHTML = '';
+  data.steps.forEach((s, idx) => {
+    const div = document.createElement('div');
+    div.className = 'roadmap-step fade-in';
+    div.innerHTML = `<div class="left"><h3>${idx+1}. ${s.title}</h3><p>${s.details}</p></div><div class="roadmap-meta">Stage ${idx+1}</div>`;
+    container.appendChild(div);
+  });
+
+  updateProgress();
+}
+
+function buildInternship(careerKey){
+  const container = el('internshipView');
+  container.innerHTML = '';
+  if(!careerKey){
+    container.innerHTML = `<div class="muted">No career selected. Go back to Start to choose one.</div>`;
+    return;
+  }
+  const data = ROADMAPS[careerKey];
+  el('currentCareerHeader').textContent = careerKey;
+  data.tasks.forEach((t, i) => {
+    const key = `${careerKey}:${i}`;
+    const done = !!state.completedTasks[key];
+    const wrap = document.createElement('div');
+    wrap.className = 'task fade-in';
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const status = done ? `<div class="small" style="color:var(--success)">Completed</div>` : `<div class="small">Not done</div>`;
+    meta.innerHTML = `<h4>${t.title}</h4><p>${t.brief}</p><div style="margin-top:8px">${status}</div>`;
+    const actions = document.createElement('div');
+    actions.className = 'task-actions';
+    const openBtn = document.createElement('button');
+    openBtn.className = 'btn';
+    openBtn.textContent = done ? 'View' : 'Start Task';
+    openBtn.onclick = () => openTaskModal(careerKey, i);
+    const preview = document.createElement('div');
+    preview.className = 'small muted';
+    preview.textContent = t.type === 'mcq' ? 'Multiple choice' : 'Short answer';
+    actions.appendChild(openBtn);
+    actions.appendChild(preview);
+
+    wrap.appendChild(meta);
+    wrap.appendChild(actions);
+    container.appendChild(wrap);
+  });
+  updateProgress();
+}
+
+/* progress calculation and UI update */
+function updateProgress(){
+  const career = state.career;
+  if(!career){
+    el('progressBar').style.width = '0%';
+    el('sideProgress').style.width = '0%';
+    el('totalTasks').textContent = '0 tasks';
+    el('quickCareer').textContent = '—';
+    el('quickDone').textContent = '0 done';
+    el('quickTotal').textContent = '0 tasks';
+    el('doneCount').textContent = '0 tasks done';
+    return;
+  }
+  const tasks = ROADMAPS[career].tasks.length;
+  let done = 0;
+  for(let i=0;i<tasks;i++){
+    if(state.completedTasks[`${career}:${i}`]) done++;
+  }
+  const pct = Math.round((done/tasks)*100);
+  el('progressBar').style.width = pct + '%';
+  el('sideProgress').style.width = pct + '%';
+  el('totalTasks').textContent = `${tasks} tasks`;
+  el('quickCareer').textContent = career;
+  el('quickDone').textContent = `${done} done`;
+  el('quickTotal').textContent = `${tasks} tasks`;
+  el('doneCount').textContent = `${done} tasks done`;
+}
+
+/* --- Task modal logic --- */
+const overlay = el('overlay');
+let modalState = { career:null, index:null };
+
+function openTaskModal(careerKey, idx){
+  const task = ROADMAPS[careerKey].tasks[idx];
+  modalState = { career:careerKey, index:idx };
+  el('modalTitle').textContent = task.title;
+  el('modalHint').textContent = task.brief;
+
+  // build body based on type
+  const body = el('modalBody');
+  body.innerHTML = '';
+  if(task.type === 'short'){
+    const ta = document.createElement('textarea');
+    ta.id = 'taskShortAnswer';
+    ta.rows = 6;
+    ta.placeholder = 'Write 2-4 sentences describing your approach...';
+    ta.value = state.drafts[`${careerKey}:${idx}`] || '';
+    body.appendChild(ta);
+  } else if(task.type === 'mcq'){
+    const mcq = document.createElement('div');
+    mcq.className = 'mcq';
+    task.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.type = 'button';
+      btn.textContent = opt;
+      btn.onclick = () => {
+        document.querySelectorAll('.mcq .option').forEach(x=>x.classList.remove('selected'));
+        btn.classList.add('selected');
+      };
+      mcq.appendChild(btn);
+    });
+    // restore draft selection if exists
+    const saved = state.drafts[`${careerKey}:${idx}`];
+    if(typeof saved === 'number') setTimeout(()=> {
+      const opts = document.querySelectorAll('.mcq .option');
+      if(opts[saved]) opts[saved].classList.add('selected');
+    }, 20);
+    body.appendChild(mcq);
+  }
+
+  el('modalFeedback').textContent = '';
+  overlay.classList.add('open');
+}
+
+el('closeModal').addEventListener('click', ()=> {
+  overlay.classList.remove('open');
+});
+
+el('saveDraftBtn').addEventListener('click', () => {
+  const {career,index} = modalState;
+  if(!career) return;
+  const key = `${career}:${index}`;
+  const t = ROADMAPS[career].tasks[index];
+  if(t.type === 'short'){
+    state.drafts[key] = el('taskShortAnswer').value;
+  } else if(t.type === 'mcq'){
+    const opts = document.querySelectorAll('.mcq .option');
+    let sel = -1;
+    opts.forEach((o,i)=> { if(o.classList.contains('selected')) sel = i; });
+    if(sel >= 0) state.drafts[key] = sel;
+  }
+  saveState();
+  el('modalFeedback').textContent = 'Draft saved locally.';
+  setTimeout(()=> el('modalFeedback').textContent = '', 2200);
+});
+
+el('submitTaskBtn').addEventListener('click', () => {
+  const {career,index} = modalState;
+  if(!career) return;
+  const task = ROADMAPS[career].tasks[index];
+  const key = `${career}:${index}`;
+  // evaluation
+  let score = 0;
+  let feedback = '';
+  if(task.type === 'short'){
+    const txt = (el('taskShortAnswer').value || '').trim();
+    const lengthOk = txt.length > 40;
+    let matched = 0;
+    const lower = txt.toLowerCase();
+    (task.keywords || []).forEach(k => { if(lower.includes(k)) matched++; });
+    if(lengthOk && matched >= 1){ score = 90; feedback = task.feedbackGood || 'Good details and approach.'; }
+    else if(lengthOk){ score = 70; feedback = 'Reasonable approach but add more specifics or tests.'; }
+    else { score = 40; feedback = task.feedbackBad || 'Add more detail and explain why your plan works.'; }
+    state.drafts[key] = txt; // save the answer as draft too
+  } else if(task.type === 'mcq'){
+    const opts = document.querySelectorAll('.mcq .option');
+    let sel = -1;
+    opts.forEach((o,i)=> { if(o.classList.contains('selected')) sel = i; });
+    if(sel === -1){ el('modalFeedback').textContent = 'Please select an option.'; return; }
+    state.drafts[key] = sel;
+    if(sel === task.answerIndex){ score = 100; feedback = task.feedbackGood || 'Correct.'; }
+    else { score = 20; feedback = task.feedbackBad || 'Not correct. Review the concepts.'; }
+  }
+
+  // store completion and score
+  state.completedTasks[key] = { submitted:true, score, ts: Date.now() };
+  saveState();
+
+  // update UI and show feedback
+  buildInternship(state.career);
+  updateProgress();
+  el('modalFeedback').textContent = feedback + ` (score: ${score})`;
+  setTimeout(()=> {
+    el('modalFeedback').textContent = '';
+    overlay.classList.remove('open');
+  }, 1200);
+});
+
+/* --- Navigation wiring --- */
+document.querySelectorAll('.crumb').forEach(c => c.addEventListener('click', () => {
+  const v = c.dataset.view;
+  showView(v);
+}));
+
+el('backBtn').addEventListener('click', () => {
+  const order = ['start','roadmap','internship'];
+  const cur = getCurrentView();
+  const idx = order.indexOf(cur);
+  if(idx > 0) showView(order[idx-1]);
+});
+el('nextBtn').addEventListener('click', () => {
+  const order = ['start','roadmap','internship'];
+  const cur = getCurrentView();
+  const idx = order.indexOf(cur);
+  if(idx < order.length-1) showView(order[idx+1]);
+});
+
+function getCurrentView(){
+  if(el('viewStart').style.display !== 'none') return 'start';
+  if(el('viewRoadmap').style.display !== 'none') return 'roadmap';
+  if(el('viewInternship').style.display !== 'none') return 'internship';
+  return 'start';
+}
+
+/* --- initial actions & events --- */
+el('generateBtn').addEventListener('click', () => {
+  const career = el('careerSelect').value;
+  const exp = el('experience').value;
+  state.career = career;
+  state.experience = exp;
+  el('userExpBadge').textContent = exp[0].toUpperCase() + exp.slice(1);
+  saveState();
+  renderAll();
+  // go to roadmap view
+  showView('roadmap');
+});
+
+el('examplesBtn').addEventListener('click', () => {
+  el('careerSelect').value = 'Software Engineer';
+  el('experience').value = 'intermediate';
+  el('generateBtn').click();
+});
+
+el('resetBtn').addEventListener('click', () => {
+  if(confirm('Reset all saved progress? This clears local storage.')) resetState();
+});
+
+/* --- full render --- */
+function renderAll(){
+  loadState();
+  // reflect experience badge
+  el('userExpBadge').textContent = (state.experience || 'beginner')[0].toUpperCase() + (state.experience || 'beginner').slice(1);
+  if(state.career){
+    el('careerSelect').value = state.career;
+    el('experience').value = state.experience || 'beginner';
+    renderRoadmap(state.career);
+    buildInternship(state.career);
+  } else {
+    renderRoadmap('Software Engineer'); // show default preview
+    buildInternship(null);
+  }
+  const last = localStorage.getItem('mentora_last_view') || 'start';
+  showView(last);
+}
+
+/* bootstrap */
+loadState();
+renderAll();
+</script>
+</body>
+</html>
