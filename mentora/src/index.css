@@ -1,13 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: dark;
+  background-color: #010712;
+}
+
 body {
-  @apply font-sans bg-slate-950 bg-gradient-mentora text-slate-100 antialiased;
+  @apply font-sans bg-mentora-midnight text-slate-100 antialiased;
+  background-image: url('data:image/svg+xml,%3Csvg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="80" height="80" fill="none"/%3E%3Ccircle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.06)"/%3E%3C/svg%3E'),
+    linear-gradient(135deg, rgba(6, 19, 50, 0.95), rgba(1, 7, 18, 0.95));
 }
 
 #root {
-  @apply min-h-screen bg-white/90 backdrop-blur-sm;
+  @apply min-h-screen bg-transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #7cfad3, #19b8c9);
+}
+
+@layer components {
+  .glass-panel {
+    @apply rounded-[28px] border border-white/10 bg-gradient-to-br from-white/15 via-white/5 to-white/0 backdrop-blur-2xl shadow-panel;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wide;
+  }
 }
