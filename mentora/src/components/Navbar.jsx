@@ -1,51 +1,50 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { GraduationCap, Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { GraduationCap, Menu, X, Sparkle } from "lucide-react";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { to: "/", label: "Home" },
-  { to: "/roadmaps", label: "Roadmaps" },
+  { to: "/roadmaps", label: "AI Roadmaps" },
   { to: "/simulations", label: "Simulations" },
-  { to: "/chatbot", label: "Chatbot" },
-  { to: "/learning-pod", label: "Learning Pods" },
-  { to: "/profile", label: "Profile" },
+  { to: "/learning-pods", label: "Learning Pods" },
+  { to: "/chatbot", label: "AI Mentor" },
 ];
 
 const linkBase =
-  "relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 hover:text-mentora-blue";
+  "relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200";
 
 const activeIndicator = (
-  <motion.span
+  <Motion.span
     layoutId="active-pill"
-    className="absolute inset-0 rounded-full bg-mentora-blue/10"
-    transition={{ type: "spring", stiffness: 350, damping: 25 }}
+    className="absolute inset-0 rounded-full bg-white/15"
+    transition={{ type: "spring", stiffness: 380, damping: 30 }}
   />
 );
 
 const primaryButtonClasses =
-  "hidden md:inline-flex items-center gap-2 rounded-full bg-mentora-blue px-5 py-2 text-sm font-semibold text-white shadow-glow transition hover:bg-mentora-blue/90";
+  "hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-mentora-mint to-mentora-teal px-5 py-2 text-sm font-semibold text-mentora-navy shadow-glow transition hover:opacity-90";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <motion.header
-      className="fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-slate-900/70 backdrop-blur-xl"
+    <Motion.header
+      className="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-mentora-midnight/70 backdrop-blur-2xl"
       initial={{ y: -70, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-mentora-blue to-mentora-navy text-white shadow-glow">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 md:px-6">
+        <Link to="/" className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-mentora-mint to-mentora-teal text-mentora-navy shadow-glow">
             <GraduationCap className="h-6 w-6" />
           </div>
           <div>
             <p className="text-lg font-semibold tracking-tight text-white">
               Mentora
             </p>
-            <p className="text-xs font-medium text-slate-300">
-              AI Career Roadmaps
+            <p className="text-xs font-medium text-white/60">
+              The AI Career Blueprint
             </p>
           </div>
         </Link>
@@ -57,7 +56,7 @@ export default function Navbar() {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `${linkBase} ${isActive ? "text-mentora-blue" : "text-slate-200"}`
+                  `${linkBase} ${isActive ? "text-white" : "text-white/70 hover:text-white"}`
                 }
               >
                 {({ isActive }) => (
@@ -73,7 +72,8 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <Link to="/chatbot" className={primaryButtonClasses}>
-            Meet Your AI Mentor
+            <Sparkle className="h-4 w-4" />
+            Launch Coach
           </Link>
           <button
             type="button"
@@ -90,35 +90,35 @@ export default function Navbar() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.nav
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-t border-white/5 bg-slate-900/95 md:hidden"
-          >
-            <div className="mx-auto flex max-w-6xl flex-col px-4 py-4">
-              {navItems.map(({ to, label }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  className={({ isActive }) =>
-                    `rounded-xl px-4 py-3 text-base font-semibold transition ${
-                      isActive
-                        ? "bg-white/10 text-mentora-blue"
-                        : "text-slate-200 hover:bg-white/5"
-                    }`
-                  }
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {label}
-                </NavLink>
-              ))}
-            </div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
-    </motion.header>
+        <AnimatePresence>
+          {mobileOpen && (
+            <Motion.nav
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="border-t border-white/5 bg-mentora-midnight/95 md:hidden"
+            >
+              <div className="mx-auto flex w-full max-w-6xl flex-col px-4 py-4">
+                {navItems.map(({ to, label }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    className={({ isActive }) =>
+                      `rounded-2xl px-4 py-3 text-base font-semibold transition ${
+                        isActive
+                          ? "bg-white/10 text-white"
+                          : "text-white/70 hover:bg-white/5 hover:text-white"
+                      }`
+                    }
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {label}
+                  </NavLink>
+                ))}
+              </div>
+            </Motion.nav>
+          )}
+        </AnimatePresence>
+      </Motion.header>
   );
 }

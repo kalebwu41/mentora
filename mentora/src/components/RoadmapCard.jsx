@@ -1,29 +1,26 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
   Laptop2,
-  Leaf,
-  PenTool,
-  FlaskConical,
+  Cog,
+  Stethoscope,
+  BriefcaseBusiness,
 } from "lucide-react";
 import RoadmapTimeline from "./RoadmapTimeline";
 
 const iconMap = {
   software: Laptop2,
-  environmental: Leaf,
-  design: PenTool,
-  medical: FlaskConical,
+  mechanical: Cog,
+  nursing: Stethoscope,
+  business: BriefcaseBusiness,
 };
 
 const ringClasses = {
-  software: "from-mentora-blue to-mentora-navy shadow-glow",
-  environmental:
-    "from-emerald-400 via-emerald-500 to-mentora-navy shadow-lg shadow-emerald-500/25",
-  design:
-    "from-pink-400 via-violet-500 to-mentora-blue shadow-lg shadow-violet-500/25",
-  medical:
-    "from-cyan-400 via-blue-500 to-indigo-600 shadow-lg shadow-blue-500/25",
+  software: "from-mentora-mint to-mentora-teal text-mentora-navy",
+  mechanical: "from-amber-300 via-orange-400 to-rose-500 text-mentora-navy",
+  nursing: "from-mentora-teal via-sky-400 to-indigo-500 text-white",
+  business: "from-pink-400 via-purple-500 to-mentora-mint text-white",
 };
 
 export default function RoadmapCard({ roadmap, defaultOpen = false }) {
@@ -32,28 +29,26 @@ export default function RoadmapCard({ roadmap, defaultOpen = false }) {
   const ringGradient = ringClasses[roadmap.iconKey] ?? ringClasses.software;
 
   return (
-    <motion.article
+    <Motion.article
       layout
-      className="group rounded-3xl border border-slate-200/60 bg-white/80 p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+      className="group rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-panel transition hover:-translate-y-1 hover:shadow-glow"
     >
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
           <div
-            className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${ringGradient} text-white`}
+            className={`flex h-14 w-14 items-center justify-center rounded-[22px] bg-gradient-to-br ${ringGradient} shadow-xl`}
           >
             <Icon className="h-7 w-7" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-slate-900">
-              {roadmap.title}
-            </h3>
-            <p className="mt-1 text-sm text-slate-600">{roadmap.description}</p>
+            <h3 className="text-xl font-semibold text-white">{roadmap.title}</h3>
+            <p className="mt-1 text-sm text-white/70">{roadmap.description}</p>
           </div>
         </div>
         <button
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
-          className="inline-flex items-center gap-2 self-start rounded-full bg-mentora-blue/10 px-4 py-2 text-sm font-semibold text-mentora-blue transition hover:bg-mentora-blue/20 md:self-center"
+          className="inline-flex items-center gap-2 self-start rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 md:self-center"
         >
           {expanded ? "Hide roadmap" : "View roadmap"}
           <ChevronDown
@@ -64,7 +59,7 @@ export default function RoadmapCard({ roadmap, defaultOpen = false }) {
 
       <AnimatePresence initial={false}>
         {expanded && (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -72,9 +67,9 @@ export default function RoadmapCard({ roadmap, defaultOpen = false }) {
             className="overflow-hidden pt-6"
           >
             <RoadmapTimeline roadmap={roadmap} />
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
-    </motion.article>
+    </Motion.article>
   );
 }
